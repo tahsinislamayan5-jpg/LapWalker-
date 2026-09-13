@@ -8,7 +8,8 @@ import java.io.File
 enum class MainTab {
     WALK,
     STEPS,
-    HISTORY
+    HISTORY,
+    WORKOUTS
 }
 
 sealed interface UpdateStatus {
@@ -31,7 +32,8 @@ data class MainViewState(
     val hasOverlayPermission: Boolean = false,
     val updateStatus: UpdateStatus = UpdateStatus.Idle,
     val workouts: List<WorkoutRecord> = emptyList(),
-    val stepState: com.takwa.lapwalker.domain.model.StepState = com.takwa.lapwalker.domain.model.StepState()
+    val stepState: com.takwa.lapwalker.domain.model.StepState = com.takwa.lapwalker.domain.model.StepState(),
+    val calisthenicsProgress: List<com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity> = emptyList()
 ) {
     val lapDistanceKm: Double
         get() = LapMath.feetToKm(lapFeet)

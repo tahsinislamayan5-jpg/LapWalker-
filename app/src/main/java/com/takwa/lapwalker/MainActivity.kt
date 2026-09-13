@@ -113,6 +113,10 @@ class MainActivity : AppCompatActivity() {
             viewModel.dispatch(MainIntent.SelectTab(com.takwa.lapwalker.ui.main.MainTab.HISTORY))
         }
 
+        binding.btnTabWorkouts.setOnClickListener {
+            viewModel.dispatch(MainIntent.SelectTab(com.takwa.lapwalker.ui.main.MainTab.WORKOUTS))
+        }
+
         binding.btnGrantStepPermission.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 requestActivityPermissionLauncher.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
@@ -268,6 +272,8 @@ class MainActivity : AppCompatActivity() {
         // Render Tabs & History
         renderTabs(state.selectedTab, state.isDarkTheme)
 
+        renderCalisthenicsSteps(state.calisthenicsProgress)
+
         // Render History Data
         historyAdapter.submitList(state.workouts)
         if (state.workouts.isEmpty()) {
@@ -302,6 +308,67 @@ class MainActivity : AppCompatActivity() {
         handleUpdateStatus(state.updateStatus)
     }
 
+    private fun renderCalisthenicsSteps(progressList: List<com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity>) {
+        val catalog = com.takwa.lapwalker.data.catalog.CalisthenicsCatalog
+        val progressMap = progressList.associateBy { it.stepId }
+
+        fun populatePillar(pillar: com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar, container: android.widget.LinearLayout) {
+            container.removeAllViews()
+            val steps = catalog.getStepsForPillar(pillar)
+            for (step in steps) {
+                val progress = progressMap[step.id]
+                val view = layoutInflater.inflate(R.layout.item_calisthenics_step, container, false)
+
+                val tvStepNum = view.findViewById<android.widget.TextView>(R.id.tv_step_number)
+                val tvStepName = view.findViewById<android.widget.TextView>(R.id.tv_step_name)
+                val tvStepStatus = view.findViewById<android.widget.TextView>(R.id.tv_step_status)
+                val btnAction = view.findViewById<android.widget.Button>(R.id.btn_action)
+
+                tvStepNum.text = step.stepNumber.toString()
+                tvStepName.text = step.name
+
+                if (progress?.isUnlocked == true) {
+                    if (progress.isMastered) {
+                        tvStepStatus.visibility = View.VISIBLE
+                        tvStepStatus.text = "Mastered"
+                        tvStepStatus.setTextColor(0xFF10B981.toInt())
+                        btnAction.text = "PRACTICE"
+                        btnAction.setBackgroundColor(0xFF0F172A.toInt())
+                        btnAction.setTextColor(0xFFFFFFFF.toInt())
+                    } else {
+                        tvStepStatus.visibility = View.GONE
+                        btnAction.text = "START"
+                        btnAction.setBackgroundColor(0xFF0284C7.toInt())
+                        btnAction.setTextColor(0xFFFFFFFF.toInt())
+                    }
+
+                    btnAction.setOnClickListener {
+                        val intent = Intent(this, com.takwa.lapwalker.ui.calisthenics.ExercisePracticeActivity::class.java).apply {
+                            putExtra("EXTRA_STEP_ID", step.id)
+                        }
+                        startActivity(intent)
+                    }
+                } else {
+                    tvStepStatus.visibility = View.VISIBLE
+                    tvStepStatus.text = "Locked"
+                    tvStepStatus.setTextColor(0xFFEF4444.toInt())
+                    btnAction.text = "🔒"
+                    btnAction.setBackgroundColor(0xFF64748B.toInt())
+                    btnAction.setTextColor(0xFFFFFFFF.toInt())
+                    btnAction.setOnClickListener(null)
+                    tvStepNum.backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF64748B.toInt())
+                }
+
+                container.addView(view)
+            }
+        }
+
+        populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.PUSH, binding.layoutPushSteps)
+        populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.PULL, binding.layoutPullSteps)
+        populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.LEGS, binding.layoutLegsSteps)
+        populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.CORE, binding.layoutCoreSteps)
+    }
+
     private fun renderTabs(selectedTab: com.takwa.lapwalker.ui.main.MainTab, isDark: Boolean) {
         val activeBg = if (isDark) R.drawable.tab_pill_active_neon else R.drawable.tab_pill_active_light
         val activeTextColor = if (isDark) 0xFF0B0F19.toInt() else 0xFFFFFFFF.toInt()
@@ -310,6 +377,7 @@ class MainActivity : AppCompatActivity() {
         binding.layoutWalkTab.visibility = if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.WALK) View.VISIBLE else View.GONE
         binding.layoutStepsTab.visibility = if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.STEPS) View.VISIBLE else View.GONE
         binding.layoutHistoryTab.visibility = if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.HISTORY) View.VISIBLE else View.GONE
+        binding.layoutWorkoutsTab.visibility = if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.WORKOUTS) View.VISIBLE else View.GONE
 
         binding.btnTabWalk.setBackgroundResource(if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.WALK) activeBg else 0)
         binding.btnTabWalk.setTextColor(if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.WALK) activeTextColor else inactiveTextColor)
@@ -319,6 +387,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnTabHistory.setBackgroundResource(if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.HISTORY) activeBg else 0)
         binding.btnTabHistory.setTextColor(if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.HISTORY) activeTextColor else inactiveTextColor)
+
+        binding.btnTabWorkouts.setBackgroundResource(if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.WORKOUTS) activeBg else 0)
+        binding.btnTabWorkouts.setTextColor(if (selectedTab == com.takwa.lapwalker.ui.main.MainTab.WORKOUTS) activeTextColor else inactiveTextColor)
     }
 
     private fun showResetStepsConfirmation() {
