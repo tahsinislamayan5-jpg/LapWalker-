@@ -14,3 +14,8 @@ After completing ANY fix, feature, or change, always output:
 3. **Release Title**
 4. **Markdown Release Description** formatted and ready to copy-paste into GitHub.
 5. **Path to `LapWalker.apk`** in the workspace root.
+
+## 3. Strict Git & GitHub Safety (MANDATORY)
+- **NEVER** attempt to backup, pull, push, fetch, merge, rebase, reset, or perform ANY Git / GitHub operations that could affect or alter the local code unless the user **explicitly** gives permission or instructs to do so.
+- Local code is the single source of truth. Always keep local changes safe and never run remote git commands autonomously.
+

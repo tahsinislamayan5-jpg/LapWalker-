@@ -9,4 +9,5 @@ interface WorkoutRepository {
     suspend fun getRecentWorkouts(limit: Int = 20): List<WorkoutRecord>
     suspend fun deleteWorkout(id: Long)
     suspend fun clearAllWorkouts()
+    suspend fun seedHistoricWorkouts(workouts: List<WorkoutRecord>)
 }

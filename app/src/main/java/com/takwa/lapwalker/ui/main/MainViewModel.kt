@@ -26,13 +26,18 @@ class MainViewModel(
     private val deleteWorkoutUseCase: DeleteWorkoutUseCase,
     private val clearAllWorkoutsUseCase: ClearAllWorkoutsUseCase,
     private val stepSensorManager: StepSensorManager,
-    private val getCalisthenicsProgressUseCase: com.takwa.lapwalker.domain.usecase.GetCalisthenicsProgressUseCase
+    private val getCalisthenicsProgressUseCase: com.takwa.lapwalker.domain.usecase.GetCalisthenicsProgressUseCase,
+    private val seedHistoricWorkoutsUseCase: com.takwa.lapwalker.domain.usecase.SeedHistoricWorkoutsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainViewState())
     val uiState: StateFlow<MainViewState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            seedHistoricWorkoutsUseCase()
+        }
+
         viewModelScope.launch {
             getCalisthenicsProgressUseCase.seedDefaults()
             getCalisthenicsProgressUseCase().collect { list ->

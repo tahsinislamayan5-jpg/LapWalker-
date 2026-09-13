@@ -29,7 +29,8 @@ val appModule = module {
             androidContext(),
             AppDatabase::class.java,
             "lap_walker_db"
-        ).fallbackToDestructiveMigration().build()
+        ).addMigrations(AppDatabase.MIGRATION_1_2)
+         .build()
     }
     single { get<AppDatabase>().workoutDao() }
     single { get<AppDatabase>().calisthenicsDao() }
@@ -54,6 +55,7 @@ val appModule = module {
     factory { SaveSettingsUseCase(get()) }
     factory { com.takwa.lapwalker.domain.usecase.GetCalisthenicsProgressUseCase(get()) }
     factory { com.takwa.lapwalker.domain.usecase.RecordExerciseAttemptUseCase(get()) }
+    factory { com.takwa.lapwalker.domain.usecase.SeedHistoricWorkoutsUseCase(get()) }
 
     // Session Engine Factory
     factory { (scope: CoroutineScope) -> WalkSessionEngine(scope) }
@@ -62,6 +64,6 @@ val appModule = module {
     single { com.takwa.lapwalker.core.sensors.StepSensorManager(androidContext()) }
 
     // ViewModels
-    viewModel { MainViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MainViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { com.takwa.lapwalker.ui.calisthenics.ExercisePracticeViewModel(get()) }
 }

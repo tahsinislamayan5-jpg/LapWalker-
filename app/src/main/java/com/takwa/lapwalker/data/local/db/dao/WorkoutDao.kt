@@ -25,6 +25,12 @@ interface WorkoutDao {
     @Query("SELECT SUM(laps) FROM workouts")
     suspend fun getTotalLaps(): Int?
 
+    @Query("SELECT COUNT(*) FROM workouts WHERE timestamp = :timestamp")
+    suspend fun countByTimestamp(timestamp: Long): Int
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(workouts: List<WorkoutEntity>)
+
     @Query("DELETE FROM workouts WHERE id = :id")
     suspend fun deleteWorkout(id: Long)
 

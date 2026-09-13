@@ -29,4 +29,12 @@ class WorkoutRepositoryImpl(
     override suspend fun clearAllWorkouts() {
         workoutDao.clearAllWorkouts()
     }
+
+    override suspend fun seedHistoricWorkouts(workouts: List<WorkoutRecord>) {
+        for (w in workouts) {
+            if (workoutDao.countByTimestamp(w.timestamp) == 0) {
+                workoutDao.insert(WorkoutEntity.fromDomain(w.copy(id = 0)))
+            }
+        }
+    }
 }
