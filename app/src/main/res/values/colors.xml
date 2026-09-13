@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0B0F19</color>
+    <color name="card_dark">#161F30</color>
+    <color name="card_border">#2A3852</color>
+    <color name="card_highlight">#1E2B45</color>
+    <color name="primary_neon">#00E5FF</color>
+    <color name="primary_neon_glow">#3300E5FF</color>
+    <color name="accent_orange">#FF6D00</color>
+    <color name="accent_orange_soft">#22FF6D00</color>
+    <color name="accent_green">#00E676</color>
+    <color name="accent_green_soft">#2200E676</color>
+    <color name="accent_purple">#B388FF</color>
+    <color name="accent_red">#FF5252</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+    <color name="bubble_bg">#111827</color>
+    <color name="bubble_ring">#00E5FF</color>
+    <color name="transparent">#00000000</color>
+</resources>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer Athletic Track Loop -->
+    <path
+        android:pathData="M38,36
+                          L62,36
+                          A18,18 0 0,1 80,54
+                          A18,18 0 0,1 62,72
+                          L38,72
+                          A18,18 0 0,1 20,54
+                          A18,18 0 0,1 38,36 Z"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="20"
+                android:startY="36"
+                android:endX="80"
+                android:endY="72"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00E5FF" />
+                <item android:offset="0.6" android:color="#0284C7" />
+                <item android:offset="1.0" android:color="#38BDF8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner Precision Speed Arc -->
+    <path
+        android:pathData="M44,45
+                          L60,45
+                          A9,9 0 0,1 69,54
+                          A9,9 0 0,1 60,63
+                          L44,63"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="44"
+                android:startY="45"
+                android:endX="69"
+                android:endY="63"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#38BDF8" />
+                <item android:offset="1.0" android:color="#00E5FF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Forward Kinetic Arrow (Momentum & Progression) -->
+    <path
+        android:pathData="M37,47
+                          L45,54
+                          L37,61"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="37"
+                android:startY="47"
+                android:endX="45"
+                android:endY="61"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF8C00" />
+                <item android:offset="1.0" android:color="#FF4500" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Pace Milestone Glow Dot -->
+    <path
+        android:pathData="M62,36m-3,0a3,3 0,1,1 6,0a3,3 0,1,1 -6,0"
+        android:fillColor="#00E5FF" />
+
+    <!-- Finish Line Spark Accent -->
+    <path
+        android:pathData="M38,72m-2.5,0a2.5,2.5 0,1,1 5,0a2.5,2.5 0,1,1 -5,0"
+        android:fillColor="#FF8C00" />
+
+</vector>

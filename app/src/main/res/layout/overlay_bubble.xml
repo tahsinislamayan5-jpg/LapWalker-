@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bubble_root"
+    android:layout_width="76dp"
+    android:layout_height="76dp"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- 56dp Circular Core with 10dp padding buffer for bounce scaling -->
+    <LinearLayout
+        android:id="@+id/bubble_inner"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bubble_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="2dp">
+
+        <TextView
+            android:id="@+id/tv_bubble_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="START"
+            android:textColor="#00E5FF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_bubble_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TAP"
+            android:textColor="#94A3B8"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</FrameLayout>

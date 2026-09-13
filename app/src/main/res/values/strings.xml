@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LapWalker</string>
+    <string name="garage_walker_subtitle">Garage Walking Lap Counter</string>
+    <string name="start_walking">START WALKING</string>
+    <string name="lap_length_title">Lap Length (feet)</string>
+    <string name="target_km_title">Target Distance (km)</string>
+    <string name="user_weight_title">Body Weight (kg)</string>
+    <string name="permission_required_msg">Please grant overlay permission so the bubble can float over your manhwa app.</string>
+</resources>
