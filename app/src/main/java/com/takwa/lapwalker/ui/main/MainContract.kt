@@ -1,6 +1,10 @@
 package com.takwa.lapwalker.ui.main
 
 import com.takwa.lapwalker.core.math.LapMath
+import com.takwa.lapwalker.data.local.db.entity.UserRankProfileEntity
+import com.takwa.lapwalker.data.local.db.entity.StreakStatusEntity
+import com.takwa.lapwalker.data.local.db.entity.DailyBountyEntity
+
 import com.takwa.lapwalker.domain.model.AppUpdateInfo
 import com.takwa.lapwalker.domain.model.WorkoutRecord
 import java.io.File
@@ -33,7 +37,10 @@ data class MainViewState(
     val updateStatus: UpdateStatus = UpdateStatus.Idle,
     val workouts: List<WorkoutRecord> = emptyList(),
     val stepState: com.takwa.lapwalker.domain.model.StepState = com.takwa.lapwalker.domain.model.StepState(),
-    val calisthenicsProgress: List<com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity> = emptyList()
+    val calisthenicsProgress: List<com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity> = emptyList(),
+    val rankProfile: UserRankProfileEntity? = null,
+    val streakStatus: StreakStatusEntity? = null,
+    val bounties: List<DailyBountyEntity> = emptyList()
 ) {
     val lapDistanceKm: Double
         get() = LapMath.feetToKm(lapFeet)

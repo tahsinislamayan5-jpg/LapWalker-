@@ -20,6 +20,10 @@ import com.takwa.lapwalker.domain.model.AppUpdateInfo
 import com.takwa.lapwalker.ui.main.MainIntent
 import com.takwa.lapwalker.ui.main.MainViewModel
 import com.takwa.lapwalker.ui.main.MainViewState
+import com.takwa.lapwalker.data.local.db.entity.UserRankProfileEntity
+import com.takwa.lapwalker.data.local.db.entity.StreakStatusEntity
+import com.takwa.lapwalker.data.local.db.entity.DailyBountyEntity
+
 import com.takwa.lapwalker.ui.main.UpdateStatus
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -306,6 +310,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         handleUpdateStatus(state.updateStatus)
+
+        // Gamification
+        renderGamification(state)
     }
 
     private fun renderCalisthenicsSteps(progressList: List<com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity>) {
@@ -367,6 +374,26 @@ class MainActivity : AppCompatActivity() {
         populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.PULL, binding.layoutPullSteps)
         populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.LEGS, binding.layoutLegsSteps)
         populatePillar(com.takwa.lapwalker.domain.model.calisthenics.CalisthenicsPillar.CORE, binding.layoutCoreSteps)
+    }
+
+    private fun renderGamification(state: MainViewState) {
+        state.rankProfile?.let { profile ->
+            findViewById<android.widget.TextView>(com.takwa.lapwalker.R.id.tv_division_name)?.text = "${profile.divisionName} • LVL ${profile.currentLevel}"
+            findViewById<android.widget.TextView>(com.takwa.lapwalker.R.id.tv_xp_progress)?.text = "${profile.totalXp} / ${(profile.currentLevel) * 1000} XP"
+        }
+
+        state.streakStatus?.let { streak ->
+            val flameEmoji = when (streak.flameTier) {
+                "EMBER" -> "🔥"
+                "VIBRANT AMBER" -> "🧡"
+                "COBALT BLAZE" -> "💙"
+                else -> "✨"
+            }
+            findViewById<android.widget.TextView>(com.takwa.lapwalker.R.id.tv_flame_streak)?.text = "$flameEmoji ${streak.currentStreakDays} DAYS • ${streak.flameTier}"
+            findViewById<android.widget.TextView>(com.takwa.lapwalker.R.id.tv_shields)?.text = "🛡️ ${streak.freezeShieldsAvailable}/2  |  🪙 ${streak.restTokensAvailable}/2"
+        }
+
+        findViewById<android.widget.TextView>(com.takwa.lapwalker.R.id.tv_bounties_summary)?.text = "${state.bounties.count { it.isCompleted }}/${state.bounties.size} Completed"
     }
 
     private fun renderTabs(selectedTab: com.takwa.lapwalker.ui.main.MainTab, isDark: Boolean) {
