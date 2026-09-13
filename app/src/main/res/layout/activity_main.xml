@@ -166,6 +166,19 @@
                 android:textColor="#64748B"
                 android:textSize="12sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_tab_workouts"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="💪 Strength"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Container for WALK Tab Content -->
@@ -1108,6 +1121,124 @@
                 android:nestedScrollingEnabled="false" />
 
         </LinearLayout> <!-- End layout_history_tab -->
+
+        <!-- Container for WORKOUTS Tab Content -->
+        <LinearLayout
+            android:id="@+id/layout_workouts_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Push Pillar Card -->
+            <LinearLayout
+                android:id="@+id/card_pillar_push"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_background_light"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PILLAR 1: PUSH"
+                    android:textColor="#0284C7"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/layout_push_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Pull Pillar Card -->
+            <LinearLayout
+                android:id="@+id/card_pillar_pull"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_background_light"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PILLAR 2: PULL"
+                    android:textColor="#0284C7"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/layout_pull_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Legs Pillar Card -->
+            <LinearLayout
+                android:id="@+id/card_pillar_legs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_background_light"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PILLAR 3: LEGS"
+                    android:textColor="#0284C7"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/layout_legs_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- Core Pillar Card -->
+            <LinearLayout
+                android:id="@+id/card_pillar_core"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/card_background_light"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PILLAR 4: CORE"
+                    android:textColor="#0284C7"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/layout_core_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+        </LinearLayout> <!-- End layout_workouts_tab -->
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -33,6 +33,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.calisthenics.ExercisePracticeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.LapWalker" />
+
         <service
             android:name=".LapOverlayService"
             android:enabled="true"
