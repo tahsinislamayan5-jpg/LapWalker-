@@ -1,10 +1,11 @@
 package com.takwa.lapwalker.ui.main
 
 import com.takwa.lapwalker.core.math.LapMath
-import com.takwa.lapwalker.data.local.db.entity.UserRankProfileEntity
-import com.takwa.lapwalker.data.local.db.entity.StreakStatusEntity
+import com.takwa.lapwalker.data.local.db.entity.ArmoryQuestEntity
 import com.takwa.lapwalker.data.local.db.entity.DailyBountyEntity
-
+import com.takwa.lapwalker.data.local.db.entity.PerformanceBadgeEntity
+import com.takwa.lapwalker.data.local.db.entity.StreakStatusEntity
+import com.takwa.lapwalker.data.local.db.entity.UserRankProfileEntity
 import com.takwa.lapwalker.domain.model.AppUpdateInfo
 import com.takwa.lapwalker.domain.model.WorkoutRecord
 import java.io.File
@@ -40,7 +41,9 @@ data class MainViewState(
     val calisthenicsProgress: List<com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity> = emptyList(),
     val rankProfile: UserRankProfileEntity? = null,
     val streakStatus: StreakStatusEntity? = null,
-    val bounties: List<DailyBountyEntity> = emptyList()
+    val bounties: List<DailyBountyEntity> = emptyList(),
+    val quests: List<ArmoryQuestEntity> = emptyList(),
+    val badges: List<PerformanceBadgeEntity> = emptyList()
 ) {
     val lapDistanceKm: Double
         get() = LapMath.feetToKm(lapFeet)
@@ -92,4 +95,6 @@ sealed interface MainIntent {
     data class UpdateStepGoal(val goal: Int) : MainIntent
     object ResetTodaySteps : MainIntent
     data class ToggleSessionOnlySteps(val enabled: Boolean) : MainIntent
+
+    data class CompleteQuest(val questId: String) : MainIntent
 }

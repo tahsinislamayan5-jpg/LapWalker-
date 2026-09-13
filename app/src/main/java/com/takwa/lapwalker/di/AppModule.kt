@@ -3,19 +3,31 @@ package com.takwa.lapwalker.di
 import androidx.room.Room
 import com.takwa.lapwalker.data.local.datastore.SettingsDataStore
 import com.takwa.lapwalker.data.local.db.AppDatabase
+import com.takwa.lapwalker.data.repository.CalisthenicsRepositoryImpl
+import com.takwa.lapwalker.data.repository.GamificationRepositoryImpl
 import com.takwa.lapwalker.data.repository.SettingsRepositoryImpl
+import com.takwa.lapwalker.data.repository.UpdateRepository
 import com.takwa.lapwalker.data.repository.WorkoutRepositoryImpl
+import com.takwa.lapwalker.domain.repository.CalisthenicsRepository
+import com.takwa.lapwalker.domain.repository.GamificationRepository
 import com.takwa.lapwalker.domain.repository.SettingsRepository
 import com.takwa.lapwalker.domain.repository.WorkoutRepository
 import com.takwa.lapwalker.domain.usecase.CalculatePaceUseCase
 import com.takwa.lapwalker.domain.usecase.ClearAllWorkoutsUseCase
+import com.takwa.lapwalker.domain.usecase.CompleteArmoryQuestUseCase
 import com.takwa.lapwalker.domain.usecase.DeleteWorkoutUseCase
+import com.takwa.lapwalker.domain.usecase.EnsureGamificationInitializedUseCase
+import com.takwa.lapwalker.domain.usecase.GetCalisthenicsProgressUseCase
+import com.takwa.lapwalker.domain.usecase.GetGamificationStateUseCase
 import com.takwa.lapwalker.domain.usecase.GetSettingsUseCase
 import com.takwa.lapwalker.domain.usecase.GetWorkoutsUseCase
+import com.takwa.lapwalker.domain.usecase.RecordExerciseAttemptUseCase
 import com.takwa.lapwalker.domain.usecase.RecordLapUseCase
 import com.takwa.lapwalker.domain.usecase.SaveSettingsUseCase
 import com.takwa.lapwalker.domain.usecase.SaveWorkoutUseCase
+import com.takwa.lapwalker.domain.usecase.SeedHistoricWorkoutsUseCase
 import com.takwa.lapwalker.overlay.WalkSessionEngine
+import com.takwa.lapwalker.ui.calisthenics.ExercisePracticeViewModel
 import com.takwa.lapwalker.ui.main.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
@@ -29,11 +41,12 @@ val appModule = module {
             androidContext(),
             AppDatabase::class.java,
             "lap_walker_db"
-        ).addMigrations(AppDatabase.MIGRATION_1_2)
+        ).addMigrations(AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3)
          .build()
     }
     single { get<AppDatabase>().workoutDao() }
     single { get<AppDatabase>().calisthenicsDao() }
+    single { get<AppDatabase>().gamificationDao() }
 
     // DataStore
     single { SettingsDataStore(androidContext()) }
@@ -41,21 +54,25 @@ val appModule = module {
     // Repositories
     single<WorkoutRepository> { WorkoutRepositoryImpl(get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
-    single<com.takwa.lapwalker.domain.repository.CalisthenicsRepository> { com.takwa.lapwalker.data.repository.CalisthenicsRepositoryImpl(get()) }
-    single { com.takwa.lapwalker.data.repository.UpdateRepository(androidContext()) }
+    single<GamificationRepository> { GamificationRepositoryImpl(get(), get(), get()) }
+    single<CalisthenicsRepository> { CalisthenicsRepositoryImpl(get(), get()) }
+    single { UpdateRepository(androidContext()) }
 
     // Use Cases
     factory { RecordLapUseCase() }
     factory { CalculatePaceUseCase() }
-    factory { SaveWorkoutUseCase(get()) }
+    factory { SaveWorkoutUseCase(get(), get()) }
     factory { GetWorkoutsUseCase(get()) }
     factory { DeleteWorkoutUseCase(get()) }
     factory { ClearAllWorkoutsUseCase(get()) }
     factory { GetSettingsUseCase(get()) }
     factory { SaveSettingsUseCase(get()) }
-    factory { com.takwa.lapwalker.domain.usecase.GetCalisthenicsProgressUseCase(get()) }
-    factory { com.takwa.lapwalker.domain.usecase.RecordExerciseAttemptUseCase(get()) }
-    factory { com.takwa.lapwalker.domain.usecase.SeedHistoricWorkoutsUseCase(get()) }
+    factory { GetCalisthenicsProgressUseCase(get()) }
+    factory { RecordExerciseAttemptUseCase(get()) }
+    factory { SeedHistoricWorkoutsUseCase(get()) }
+    factory { GetGamificationStateUseCase(get()) }
+    factory { EnsureGamificationInitializedUseCase(get()) }
+    factory { CompleteArmoryQuestUseCase(get()) }
 
     // Session Engine Factory
     factory { (scope: CoroutineScope) -> WalkSessionEngine(scope) }
@@ -64,6 +81,6 @@ val appModule = module {
     single { com.takwa.lapwalker.core.sensors.StepSensorManager(androidContext()) }
 
     // ViewModels
-    viewModel { MainViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { com.takwa.lapwalker.ui.calisthenics.ExercisePracticeViewModel(get()) }
+    viewModel { MainViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { ExercisePracticeViewModel(get()) }
 }

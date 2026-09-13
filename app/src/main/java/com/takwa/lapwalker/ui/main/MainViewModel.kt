@@ -9,9 +9,10 @@ import com.takwa.lapwalker.domain.usecase.DeleteWorkoutUseCase
 import com.takwa.lapwalker.domain.usecase.GetSettingsUseCase
 import com.takwa.lapwalker.domain.usecase.GetWorkoutsUseCase
 import com.takwa.lapwalker.domain.usecase.SaveSettingsUseCase
+import com.takwa.lapwalker.domain.usecase.GetGamificationStateUseCase
+import com.takwa.lapwalker.domain.usecase.EnsureGamificationInitializedUseCase
+import com.takwa.lapwalker.domain.usecase.CompleteArmoryQuestUseCase
 import com.takwa.lapwalker.core.sensors.StepSensorManager
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +28,10 @@ class MainViewModel(
     private val clearAllWorkoutsUseCase: ClearAllWorkoutsUseCase,
     private val stepSensorManager: StepSensorManager,
     private val getCalisthenicsProgressUseCase: com.takwa.lapwalker.domain.usecase.GetCalisthenicsProgressUseCase,
-    private val seedHistoricWorkoutsUseCase: com.takwa.lapwalker.domain.usecase.SeedHistoricWorkoutsUseCase
+    private val seedHistoricWorkoutsUseCase: com.takwa.lapwalker.domain.usecase.SeedHistoricWorkoutsUseCase,
+    private val getGamificationStateUseCase: GetGamificationStateUseCase,
+    private val ensureGamificationInitializedUseCase: EnsureGamificationInitializedUseCase,
+    private val completeArmoryQuestUseCase: CompleteArmoryQuestUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainViewState())
@@ -36,12 +40,27 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             seedHistoricWorkoutsUseCase()
+            ensureGamificationInitializedUseCase()
         }
 
         viewModelScope.launch {
             getCalisthenicsProgressUseCase.seedDefaults()
             getCalisthenicsProgressUseCase().collect { list ->
                 _uiState.update { it.copy(calisthenicsProgress = list) }
+            }
+        }
+
+        viewModelScope.launch {
+            getGamificationStateUseCase().collect { gamification ->
+                _uiState.update { current ->
+                    current.copy(
+                        rankProfile = gamification.rankProfile,
+                        streakStatus = gamification.streakStatus,
+                        bounties = gamification.bounties,
+                        quests = gamification.quests,
+                        badges = gamification.badges
+                    )
+                }
             }
         }
 
@@ -78,6 +97,7 @@ class MainViewModel(
                 }
             }
         }
+
         viewModelScope.launch {
             getSettingsUseCase().collect { settings ->
                 stepSensorManager.setSessionOnlyMode(settings.sessionOnlySteps)
@@ -161,14 +181,7 @@ class MainViewModel(
                 }
             }
             is MainIntent.UpdateStepPermission -> {
-                _uiState.update { current ->
-                    current.copy(stepState = current.stepState.copy(hasPermission = intent.granted))
-                }
-                if (intent.granted) {
-                    stepSensorManager.startListening()
-                } else {
-                    stepSensorManager.stopListening()
-                }
+                handleStepPermissionResult(intent.granted)
             }
             is MainIntent.UpdateStepGoal -> {
                 stepSensorManager.updateGoal(intent.goal)
@@ -177,16 +190,29 @@ class MainViewModel(
                 stepSensorManager.resetTodaySteps()
             }
             is MainIntent.ToggleSessionOnlySteps -> {
-                stepSensorManager.setSessionOnlyMode(intent.enabled)
                 viewModelScope.launch {
-                    val current = getSettingsUseCase().first()
-                    saveSettingsUseCase(current.copy(sessionOnlySteps = intent.enabled))
+                    stepSensorManager.setSessionOnlyMode(intent.enabled)
+                    saveSettingsUseCase(
+                        UserSettings(
+                            lapFeet = _uiState.value.lapFeet,
+                            targetKm = _uiState.value.targetKm,
+                            weightKg = _uiState.value.weightKg,
+                            vibrateEnabled = _uiState.value.vibrateEnabled,
+                            isDarkTheme = _uiState.value.isDarkTheme,
+                            sessionOnlySteps = intent.enabled
+                        )
+                    )
+                }
+            }
+            is MainIntent.CompleteQuest -> {
+                viewModelScope.launch {
+                    completeArmoryQuestUseCase(intent.questId)
                 }
             }
         }
     }
 
-    fun startStepSensorIfPermitted(hasPermission: Boolean) {
+    private fun handleStepPermissionResult(hasPermission: Boolean) {
         _uiState.update { current ->
             current.copy(stepState = current.stepState.copy(hasPermission = hasPermission))
         }
@@ -199,7 +225,6 @@ class MainViewModel(
         super.onCleared()
         stepSensorManager.stopListening()
     }
-
 
     private fun performUpdateCheck(isManual: Boolean) {
         viewModelScope.launch {
@@ -246,7 +271,8 @@ class MainViewModel(
                     targetKm = state.targetKm,
                     weightKg = state.weightKg,
                     vibrateEnabled = state.vibrateEnabled,
-                    isDarkTheme = state.isDarkTheme
+                    isDarkTheme = state.isDarkTheme,
+                    sessionOnlySteps = state.stepState.isSessionOnlyMode
                 )
             )
         }

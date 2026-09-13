@@ -5,10 +5,14 @@ import com.takwa.lapwalker.data.local.db.dao.CalisthenicsDao
 import com.takwa.lapwalker.data.local.db.entity.CalisthenicsAttemptEntity
 import com.takwa.lapwalker.data.local.db.entity.CalisthenicsProgressEntity
 import com.takwa.lapwalker.domain.repository.CalisthenicsRepository
+import com.takwa.lapwalker.domain.repository.GamificationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlin.math.max
 
-class CalisthenicsRepositoryImpl(private val dao: CalisthenicsDao) : CalisthenicsRepository {
+class CalisthenicsRepositoryImpl(
+    private val dao: CalisthenicsDao,
+    private val gamificationRepository: GamificationRepository
+) : CalisthenicsRepository {
     override fun getAllProgress(): Flow<List<CalisthenicsProgressEntity>> = dao.getAllProgress()
 
     override suspend fun getProgressForStep(stepId: String): CalisthenicsProgressEntity? =
@@ -52,13 +56,7 @@ class CalisthenicsRepositoryImpl(private val dao: CalisthenicsDao) : Calisthenic
         )
         dao.saveProgress(updated)
 
-        if (wasBenchmarkPassed) {
-            val step = CalisthenicsCatalog.getStep(stepId)
-            val nextId = step?.nextStepId
-            if (nextId != null) {
-                val nextProgress = dao.getProgressForStep(nextId) ?: CalisthenicsProgressEntity(stepId = nextId)
-                dao.saveProgress(nextProgress.copy(isUnlocked = true))
-            }
-        }
+        // Award Calisthenics XP, streak & evaluate level-gated unlocks
+        gamificationRepository.onCalisthenicsCompleted(stepId, setsCompleted, wasBenchmarkPassed)
     }
 }
